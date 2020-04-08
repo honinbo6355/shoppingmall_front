@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {getCurrentUserInfo} from '../../api/UserApi.js'   
+    
 
     export default {
         name: "OrderUser",
@@ -17,16 +17,14 @@ import {getCurrentUserInfo} from '../../api/UserApi.js'
         },
         data() {
             return {
-                user:{},
-                customerName:'',
+                
             }
         },
         methods: {
             
         },
         async created(){
-            this.user = await getCurrentUserInfo();
-            this.customerName = this.user.name;
+            
         },
 
     }
