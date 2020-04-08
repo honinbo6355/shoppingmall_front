@@ -1,7 +1,8 @@
 <template>
     <div class="user-info">
-        <span style="padding-right: 8%;">이름</span>
-        <sui-input focus/>
+        <span style="margin-right: 15%;" >이름</span>
+        <sui-input v-model="customerName" focus/>
+        <h2>test</h2>
     </div>
     
 </template>
