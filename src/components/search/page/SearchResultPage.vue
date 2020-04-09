@@ -5,15 +5,18 @@
             <div class="fix-inner">
                 <div class="search-top">
                     <h3 class="title">“{{query}}” 검색결과 <em
-                            id="titleCount">{{searchResultGoods.length.toLocaleString()}}</em></h3>
+                            id="titleCount">{{goodsList.length.toLocaleString()}}</em></h3>
                 </div>
-                <Navigation :categoryList="categoryList" :isActive="isActive" v-on:changeCategory="changeCategory"/>
+
+                <Navigation :categoryList="categoryList" :isActive="isActive"
+                            v-on:changeCategory="changeCategory"
+                            v-on:changePriceRange="changePriceRange"/>
+
                 <div class="goods-area">
-                    <sui-loader active centered inline v-if="searchResultGoods[0].GoodsModel !== undefined"/>
-                    <GoodsListCards v-else
-                                    :goodsList="searchResultGoods" :items_per_row="4"
-                                    :noItemMessage="noItemMessage"
-                                    v-on:reSort="reSort"/>
+                    <GoodsListCards
+                            :goodsList="goodsList" :items_per_row="4"
+                            :noItemMessage="noItemMessage"
+                            v-on:reSort="reSort"/>
                 </div>
             </div>
         </div>
@@ -30,6 +33,7 @@
     import SideBanner from "../../share/SideBanner";
     import GoodsListCards from "../../share/GoodsListCards";
     import Navigation from "../../share/Navigation";
+    import QueryModel from "../../share/model/QueryModel"
 
     export default {
         name: "SearchResultPage",
@@ -42,9 +46,13 @@
         },
         data() {
             return {
+                categoryList: [],
+                categoryCode: "",
+                sort: "goodsCode/DESC",
+                minPrice: "",
+                maxPrice: "",
                 query: "",
                 isActive: false,
-                sort: "goodsCode/DESC",
                 resultCount: 0,
                 noItemMessage: "검색 결과가 없습니다.",
             }
@@ -53,40 +61,54 @@
             getQuery() {
                 this.query = this.$route.query.query;
             },
-            getSearchResult() {
-                this.$store.commit("getSearchResultList",
-                    {
-                        query: this.query,
-                        sort: this.sort,
-                        categoryCode: this.categoryCode,
+            getGoodsList() {
+                this.$store.commit("getPageGoodsModelList", new QueryModel(this.query, this.sort, this.categoryCode, this.minPrice, this.maxPrice));
+            },
+            getCategoryList() {
+                for (let goods of this.goodsList) {
+                    for (let category of goods.categories) {
+                        let data = {
+                            "name": category.name,
+                            "categoryCode": category.categoryCode,
+                        }
+                        if (this.categoryList.filter(category => category.categoryCode === data.categoryCode).length === 0
+                        ) {
+                            this.categoryList.push(data);
+                        }
+
                     }
-                );
-                },
-            //getCategoryList() {},
+                }
+            },
             changeCategory(categoryCode) {
                 this.categoryCode = categoryCode;
             },
+            changePriceRange(minPrice, maxPrice) {
+                this.minPrice = minPrice;
+                this.maxPrice = maxPrice;
+                this.getGoodsList();
+            },
             reSort(sort) {
                 this.sort = sort;
-                this.getSearchResult();
+                this.getGoodsList();
             },
         },
         created() {
             this.getQuery();
-            this.getSearchResult();
+            this.getGoodsList();
+        },
+        beforeUpdate() {
+            console.log(this.goodsList)
+            this.getCategoryList();
         },
         computed: {
-            categoryList() {
-                return this.$store.state.categoryStore.categoryList;
-            },
-            searchResultGoods() {
-                return this.$store.state.goodsStore.searchResultGoodsModels;
+            goodsList() {
+                return this.$store.state.goodsStore.pageGoodsModels;
             },
         },
         watch: {
             "query": "getQuery",
-            "$route": ["searchResultGoods", "getCategoryList"],
-            "categoryCode": ["getCategoryInfo", "getCategoryGoods"],
+            "$route": ["getGoodsList", "getCategoryList"],
+            "categoryCode": ["getGoodsList"],
         },
     }
 </script>

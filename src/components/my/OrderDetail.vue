@@ -5,28 +5,29 @@
                 <FaqHeader :title="'주문배송상세'"></FaqHeader>
             </div>
             <div class="order-detail-header">
-                <p>주문번호 1111 (주문일: 2020.03.11, 주문자: 이선경)</p>
+                <p>주문번호 {{orderDetail.orderId}} (주문일: {{orderDetail.orderDate}}, 주문자: {{currentUser.name}})</p>
             </div>
             <div class="my-order-list">
                 <div>
                     <div class="goods-list">
                         <div class="my-order-list-goods">
                     <span class="goods-img">
-                        <img src="https://image.msscdn.net/images/goods_img/20180703/810033/810033_1_500.jpg">
+                        <img :src="goods.imgUrl">
                     </span>
                             <div class="my-order-list-info">
-                                <p class="font-emphasis" style="margin-bottom: 0">나이키</p>
-                                <p class="font-emphasis">W에어맥스 97 트리플 화이트 921733</p>
-                                <p>사이즈선택 235</p>
-                                <p>수량 1개</p>
-                                <p>배송완료</p>
+                                <p class="font-emphasis" style="margin-bottom: 0">{{goods.seller}}</p>
+                                <p class="font-emphasis" @click="goGoodsDetailPage" style="cursor: pointer">
+                                    {{goods.title}}</p>
+                                <p>옵션 {{orderDetail.selectedOptions}}</p>
+                                <p>수량 {{orderDetail.goodsCount}}개</p>
+                                <p>{{orderState}}</p>
                             </div>
                             <div style="float: right;">
-                                <span class="my-order-list-price font-emphasis">10000원</span>
+                                <span class="my-order-list-price font-emphasis">{{Number(orderDetail.orderPaymentInfo.orderOriginalPrice.goodsPrice).toLocaleString()}}원</span>
                                 <div class="my-order-list-button">
-                                    <button class="btn1">반품접수</button>
-                                    <button class="btn1">교환접수</button>
-                                    <button>상품평보기</button>
+                                    <button class="btn1" @click="apply('return')">반품접수</button>
+                                    <button class="btn1" @click="apply('exchange')">교환접수</button>
+<!--                                    <button>상품평보기</button>-->
                                 </div>
                             </div>
                         </div>
@@ -35,20 +36,24 @@
             </div>
         </div>
         <div class="delivery_cost">
-            <p>배송비 0원</p>
+            <p>배송비 {{Number(orderDetail.orderPaymentInfo.orderOriginalPrice.shippingPrice).toLocaleString()}}원</p>
         </div>
         <div class="delivery_info">
             <div class="tb_container">
                 <table class="info_tb">
                     <tr>
                         <td class="tb_title">배송지</td>
-                        <td><p style="font-weight: bold">이선경</p>
-                            <p>22158 인천 미추홀구 한나루로 518번길</p>
-                            <p>01012341234</p></td>
+                        <td><p style="font-weight: bold">{{orderDetail.orderDeliveryInfo.receiverName}}</p>
+                            <p>{{orderDetail.orderDeliveryInfo.roadAddress}}</p>
+                            <p>({{orderDetail.orderDeliveryInfo.zipcodeAddress + '' +
+                                orderDetail.orderDeliveryInfo.remainAddress}})</p>
+                            <p>
+                                {{orderDetail.orderDeliveryInfo.contactNumber+'/'+orderDetail.orderDeliveryInfo.phoneNumber}}</p>
+                        </td>
                     </tr>
                     <tr>
                         <td class="tb_title">배송메시지</td>
-                        <td>선택안함</td>
+                        <td>{{orderDetail.orderDeliveryInfo.message}}</td>
                     </tr>
                 </table>
             </div>
@@ -56,18 +61,24 @@
         <div class="order_header">
             <FaqHeader :title="'결제/할인 정보'"></FaqHeader>
         </div>
-        <table class="pay_table">
+        <table class="pay_table" v-if="orderDetail.orderPaymentInfo.discountPrice">
             <tr class="first_line">
-                <td><p>총 주문금액 : 100000원</p></td>
-                <td><p>총 할인금액 : -5000원</p></td>
-                <td><p>총 결제금액 : 100000원</p></td>
+                <td><p>총 주문금액 : {{orderDetail.orderPaymentInfo.originalPrice.toLocaleString()}}원</p></td>
+                <td><p>총 할인금액 : -{{orderDetail.orderPaymentInfo.discountPrice.toLocaleString()}}원</p></td>
+                <td><p>총 결제금액 : {{Number(orderDetail.orderPaymentInfo.paymentPrice).toLocaleString()}}원</p></td>
             </tr>
             <tr style="height: 120px;">
-                <td class="gray_row"><p>상품금액 <span class="num_area">100000원</span></p>
-                    <p>배송비 <span class="num_area">0원</span></p></td>
-                <td class="gray_row"><p>플러스 할인 <span class="num_area">100000원</span></p>
-                    <p>기본할인 <span class="num_area">0원</span></p></td>
-                <td class="gray_row"><p>신용카드 <span class="num_area">100000원</span></p></td>
+                <td class="gray_row"><p>상품금액 <span class="num_area">{{Number(orderDetail.orderPaymentInfo.orderOriginalPrice.goodsPrice).toLocaleString()}}원</span>
+                </p>
+                    <p>배송비 <span class="num_area">{{Number(orderDetail.orderPaymentInfo.orderOriginalPrice.shippingPrice).toLocaleString()}}원</span>
+                    </p></td>
+                <td class="gray_row"><p>카드 할인 <span class="num_area">{{Number(orderDetail.orderPaymentInfo.orderDiscountPriceList[0].discountPrice).toLocaleString()}}원</span>
+                </p>
+                    <p>포인트 할인 <span class="num_area">{{Number(orderDetail.orderPaymentInfo.orderDiscountPriceList[1].discountPrice).toLocaleString()}}원</span>
+                    </p></td>
+                <td class="gray_row"><p>신용카드 <span class="num_area">{{Number(orderDetail.orderPaymentInfo.paymentPrice).toLocaleString()}}원</span>
+                </p>
+                    <p>({{orderDetail.orderPaymentInfo.orderCardPayment.cardName}})</p></td>
             </tr>
         </table>
         <div class="order_header" style="margin-top: 80px;">
@@ -79,9 +90,11 @@
                 <td><p>상품평/이용후기 작성 시</p></td>
             </tr>
             <tr style="height: 120px;">
-                <td class="gray_row"><p>포인트 <span class="num_area">100000점</span></p></td>
-                <td class="gray_row"><p>포인트 <span class="num_area">최대 200점</span></p>
-                <p style="float: right; margin-right: 15px;">(상품평 작성 시 적립)</p></td>
+                <td class="gray_row"><p>포인트 <span class="num_area">{{Number(orderDetail.orderPointInfo.orderComplete).toLocaleString()}}점</span>
+                </p></td>
+                <td class="gray_row"><p>포인트 <span class="num_area">{{Number(orderDetail.orderPointInfo.writeComment).toLocaleString()}}점</span>
+                </p>
+                    <p style="float: right; margin-right: 15px;">(상품평 작성 시 적립)</p></td>
             </tr>
         </table>
         <div style="text-align: center">
@@ -92,26 +105,60 @@
 
 <script>
     import FaqHeader from "../faq/FaqHeader";
+    import {getFullOrder, changeState} from "../../api/OrderApi";
+    import {getCurrentUserInfo} from "../../api/UserApi";
+    import GoodsApi from "../../api/GoodsApi";
+    import OrderModel from "./model/OrderModel";
 
     export default {
         name: "OrderDetail",
         components: {
             FaqHeader
         },
-        methods:{
-            goOrderPage(){
-                this.$router.push('/orderList');
+        data() {
+            return {
+                orderDetail: new OrderModel(),
+                currentUser: {},
+                goods: {},
+                orderState: '',
             }
+        },
+        methods: {
+            goOrderPage() {
+                this.$router.push('/orderList');
+            },
+            goGoodsDetailPage() {
+                this.$router.push(`/goodsDetail/${this.orderDetail.goodsId}`);
+            },
+            async apply(option) {
+                let target = option === 'return' ? '반품' : '교환';
+                if (confirm(`${target}신청을 하시겠습니까?`)) {
+                    await changeState('normal', option, this.orderDetail.orderId)
+                        .then(() => {
+                            alert(`${target}신청이 완료되었습니다.`);
+                            this.$router.push(`/cancelSearch/${target}`);
+                        })
+                        .catch(err => console.log(err));
+                }
+
+            }
+        },
+        async created() {
+            this.orderDetail = await getFullOrder(this.$route.params.orderId);
+            this.orderState = this.orderDetail.orderState.orderState;
+            this.currentUser = await getCurrentUserInfo();
+            this.goods = await new GoodsApi().getGoods(this.orderDetail.goodsId);
         }
     }
 </script>
 
 <style scoped>
-    .num_area{
+    .num_area {
         float: right;
         margin-right: 15px;
         font-weight: bold;
     }
+
     .first_line {
         height: 60px;
         font-weight: bold;

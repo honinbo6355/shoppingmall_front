@@ -1,7 +1,5 @@
 import request, {GOODS_URL} from './axios';
 import GoodsSetApiModel from './model/GoodsSetApiModel';
-import CategoryGoodsSetApiModel from './model/CategoryGoodsSetApiModel';
-import SearchResultGoodsSetApiModel from './model/SearchResultGoodsSetApiModel';
 
 class GoodsApi {
     getGoods(goodsCode) {
@@ -25,20 +23,8 @@ class GoodsApi {
         });
     }
 
-    getCategoryGoodsList(categoryCode, sort) {
-        let categoryGoodsSetApiModel = new CategoryGoodsSetApiModel(categoryCode, sort);
-        return request.get(GOODS_URL + `/categorygoodslist`, {params: categoryGoodsSetApiModel}).then(
-            (response) => {
-                return response.data;
-            }
-        ).catch(function (error) {
-            console.log(error);
-        });
-    }
-
-    getSearchResultGoodsList(query, sort, categoryCode) {
-        let searchResultGoodsSetApiModel = new SearchResultGoodsSetApiModel(query, sort, categoryCode);
-        return request.get(GOODS_URL + `/searchresultlist`, {params: searchResultGoodsSetApiModel}).then(
+    getPageGoodsList(query) {
+        return request.post(GOODS_URL + `/pagegoodslist`, query).then(
             (response) => {
                 return response.data;
             }

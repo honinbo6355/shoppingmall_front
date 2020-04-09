@@ -30,30 +30,39 @@
                     <div class="nav-content">
                         <sui-form>
                             <sui-form-field>
-                                <sui-checkbox radio label="전체" value="1" v-model="priceOption"/>
+                                <sui-checkbox radio label="전체" value="1" v-model="priceOption"
+                                              @change="radioChange"/>
                             </sui-form-field>
                             <sui-form-field>
-                                <sui-checkbox radio label="5만원 이하" value="2" v-model="priceOption"/>
+                                <sui-checkbox radio label="5만원 이하" value="2" v-model="priceOption"
+                                              @change="radioChange"/>
                             </sui-form-field>
                             <sui-form-field>
-                                <sui-checkbox radio label="5만원 ~ 10만원" value="3" v-model="priceOption"/>
+                                <sui-checkbox radio label="5만원 ~ 10만원" value="3" v-model="priceOption"
+                                              @change="radioChange"/>
                             </sui-form-field>
                             <sui-form-field>
-                                <sui-checkbox radio label="10만원 ~ 30만원" value="4" v-model="priceOption"/>
+                                <sui-checkbox radio label="10만원 ~ 30만원" value="4" v-model="priceOption"
+                                              @change="radioChange"/>
                             </sui-form-field>
                             <sui-form-field>
-                                <input placeholder="최저가" maxlength="8"/>
+                                <sui-checkbox radio label="직접 입력" value="5" v-model="priceOption"/>
                             </sui-form-field>
                             <sui-form-field>
-                                <input placeholder="최고가" maxlength="8"/>
+                                <input placeholder="최저가" maxlength="8" v-model="selfMinPrice"
+                                       @keyup.enter="setPriceRange"/>
                             </sui-form-field>
-                            <sui-button secondary type="submit">검색</sui-button>
+                            <sui-form-field>
+                                <input placeholder="최고가" maxlength="8" v-model="selfMaxPrice"
+                                       @keyup.enter="setPriceRange"/>
+                            </sui-form-field>
+                            <sui-button secondary type="submit" @click="setSelfPriceRange">검색</sui-button>
                         </sui-form>
                     </div>
                 </sui-accordion-content>
             </sui-accordion>
         </div>
-        <sui-button basic color="black" content="초기화" icon="redo" class="reset"/>
+        <sui-button basic color="black" content="초기화" icon="redo" class="reset" @click="reset"/>
 
     </div>
 </template>
@@ -69,20 +78,62 @@
         ],
         data() {
             return {
-                priceOption: "",
+                priceOption: "1",
                 minPrice: "",
                 maxPrice: "",
+                selfMinPrice: "",
+                selfMaxPrice: "",
             }
         },
         methods: {
             changeCategory(categoryCode) {
                 this.$emit("changeCategory", categoryCode);
             },
+            changePriceRange() {
+                this.$emit("changePriceRange", this.minPrice, this.maxPrice);
+            },
+            radioChange() {
+                switch (this.priceOption) {
+                    case "1":
+                        this.minPrice = "";
+                        this.maxPrice = "";
+                        break;
+                    case "2":
+                        this.minPrice = "0";
+                        this.maxPrice = "50000";
+                        break;
+                    case "3":
+                        this.minPrice = "50000";
+                        this.maxPrice = "100000";
+                        break;
+                    case "4":
+                        this.minPrice = "100000";
+                        this.maxPrice = "300000";
+                        break;
+                }
+                this.changePriceRange();
+            },
+            setSelfPriceRange() {
+                if (this.selfMinPrice == "") {
+                    alert("최저가를 입력해주세요");
+                } else if (this.selfMaxPrice == "") {
+                    alert("최고가를 입력해주세요");
+                } else {
+                    this.minPrice = this.selfMinPrice;
+                    this.maxPrice = this.selfMaxPrice;
+                    this.changePriceRange();
+                }
+            },
+            reset() {
+                this.priceOption = "1";
+                this.minPrice = "";
+                this.maxPrice = "";
+                this.selfMinPrice = "";
+                this.selfMaxPrice = "";
+                this.changePriceRange();
+                this.changeCategory("");
+            },
         },
-        created() {
-        },
-        computed: {},
-        watch: {},
     }
 </script>
 

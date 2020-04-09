@@ -3,13 +3,17 @@
         <Header></Header>
         <div class="container">
             <div class="fix-inner">
+                <Navigation :categoryList="categoryList" :isActive="isActive"
+                            v-on:changeCategory="changeCategory"
+                            v-on:changePriceRange="changePriceRange"/>
 
-                <Navigation :categoryList="categoryList" :isActive="isActive" v-on:changeCategory="changeCategory"/>
                 <div class="goods-area">
                     <sui-loader active centered inline v-if="categoryCode !== categoryInfo.categoryCode"/>
-                    <div v-else-if="categoryGoods">
+
+                    <div v-else-if="goodsList">
                         <h2 class="page-title">{{categoryInfo.name}}</h2>
-                        <GoodsListCards :goodsList="categoryGoods" :items_per_row="4"
+
+                        <GoodsListCards :goodsList="goodsList" :items_per_row="4"
                                         :noItemMessage="noItemMessage"
                                         v-on:reSort="reSort"/>
                     </div>
@@ -28,6 +32,7 @@
     import SideBanner from "../../share/SideBanner";
     import GoodsListCards from "../../share/GoodsListCards";
     import Navigation from "../../share/Navigation";
+    import QueryModel from "../../share/model/QueryModel";
 
     export default {
         name: "CategoryPage",
@@ -41,9 +46,12 @@
         data() {
             return {
                 categoryCode: "",
+                sort: "goodsCode/DESC",
+                minPrice: "",
+                maxPrice: "",
                 isActive: true,
                 priceOption: "",
-                sort: "goodsCode/DESC",
+                query: "",
                 noItemMessage: "현재 등록된 상품이 없습니다.",
             }
         },
@@ -51,33 +59,36 @@
             getCategoryCode() {
                 this.categoryCode = this.$route.params.categoryCode;
             },
-            changeCategory(categoryCode) {
-                this.categoryCode = categoryCode;
-            },
             getCategoryInfo() {
                 this.$store.commit("getCategory", this.categoryCode);
             },
             getCategoryList() {
                 this.$store.commit("getCategoryList", this.categoryCode);
             },
-            getCategoryGoods() {
-                this.$store.commit("getCategoryGoodsModelList",
-                    {
-                        categoryCode: this.categoryCode,
-                        sort: this.sort
-                    }
+            getGoodsList() {
+                this.$store.commit("getPageGoodsModelList", new QueryModel(this.query, this.sort, this.categoryCode, this.minPrice, this.maxPrice)
                 );
+            },
+            changeCategory(categoryCode) {
+                if (categoryCode != "") {
+                    this.categoryCode = categoryCode;
+                }
+            },
+            changePriceRange(minPrice, maxPrice) {
+                this.minPrice = minPrice;
+                this.maxPrice = maxPrice;
+                this.getGoodsList();
             },
             reSort(sort) {
                 this.sort = sort;
-                this.getCategoryGoods();
+                this.getGoodsList();
             },
         },
         created() {
             this.getCategoryCode();
             this.getCategoryInfo();
             this.getCategoryList();
-            this.getCategoryGoods();
+            this.getGoodsList();
         },
         beforeUpdate() {
             if (this.categoryInfo.categoryCode == null) {
@@ -94,16 +105,17 @@
             errorState() {
                 return this.$store.state.categoryStore.errorInfo;
             },
-            categoryGoods() {
-                return this.$store.state.goodsStore.categoryGoodsModels;
+            goodsList() {
+                return this.$store.state.goodsStore.pageGoodsModels;
             }
         },
         watch: {
             "$route": ["getCategoryCode", "getCategoryList"],
-            "categoryCode": ["getCategoryInfo", "getCategoryGoods"],
+            "categoryCode": ["getCategoryInfo", "getGoodsList"],
             errorState() {
                 this.getCategoryCode();
-            }
+            },
+            "goodsList": [],
         },
     }
 </script>

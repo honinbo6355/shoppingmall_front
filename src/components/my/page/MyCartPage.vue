@@ -18,7 +18,6 @@
                 <br/>
                 <br/>
                 <p>장바구니에 담은 상품이 없습니다.</p>
-
             </div>
             <div class="goods-main-container" v-else>
                 <div class="goods-list-container">
@@ -143,28 +142,6 @@
                 </div>
             </div>
         </sui-container>
-        <!--
-        <div>
-            <div>
-                <hr/>
-                state에 cartList 값
-                <br />
-                {{getCartList}}
-                <hr/>
-            </div>
-
-            <div>
-                <hr/>
-                data에 checkedCartList 값
-                <br />
-                {{checkedCartList}}
-                <hr/>
-            </div>
-            <div>
-                {{isTotalChecked}}
-            </div>
-        </div>
-        -->
         <Footer></Footer>
     </div>
 </template>
