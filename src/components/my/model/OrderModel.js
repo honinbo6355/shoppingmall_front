@@ -3,46 +3,46 @@ class OrderModel {
 	userId = '';
 	goodsId = '';
 	goodsCount = 0;
-	orderPrice = '';
+	orderPrice = ''; //제품가격 benefit
 	orderDate = '';
 	selectedOptions = '';
 	
     orderState = {};
-    orderDeliveryInfo = {
+    orderDeliveryInfo = { //배송주소
         orderId : '',
         roadAddress : '',
         zipcodeAddress : '',
         remainAddress : '',
-        receiverName : '',
+        receiverName : '', //주문고객
         message : '',
         contactNumber : '',
         phoneNumber : '',
     };
     orderPaymentInfo = {
-        originalPrice : 0,
+        originalPrice : 0, //밑에 3개안넣기
         discountPrice : 0,
         paymentPrice : 0,
-        orderOriginalPrice : {
-            orderId : '',
-            goodsPrice : '',
-            shippingPrice : '',
+        orderOriginalPrice : { 
+            orderId : '', //비워놓기
+            goodsPrice : '', //originalPrice
+            shippingPrice : '', //제품 각각 배송비
         },
         //list임
         orderDiscountPriceList : [{
             orderId : '',
             discountName : '',
-            discountPrice : '',
+            discountPrice : '', 
         }],
         orderCardPaymentInfo : {
             orderId : '',
-            cardName : '',
-            installments : '', //일시불이면 0으로 하셈
+            cardName : '', //카드이름
+            installments : '', //스트링값
         },
     };
     orderPointInfo = {
         orderId : '',
         orderComplete : '', //주문 완료되면 적립되는 포인트
-        writeComplete : '', //상품평 작성되면 적립되는 포인트 
+        writeComplete : '', //상품평 작성되면 적립되는 포인트 (200으로 넣기)
     };
     
 

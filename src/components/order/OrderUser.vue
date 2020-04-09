@@ -27,7 +27,11 @@ import {getCurrentUserInfo} from '../../api/UserApi.js'
             this.user = await getCurrentUserInfo();
             this.customerName = this.user.name;
         },
-
+        watch:{
+            customerName:function(){
+                this.$store.commit('loadCustomerName', this.customerName);
+            }
+        },
     }
 </script>
 
