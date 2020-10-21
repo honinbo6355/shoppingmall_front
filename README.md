@@ -2,8 +2,9 @@
 플래티어 신입사원 교육때 진행한 엘롯데(https://www.lotteon.com/p/display/main/ellotte?mall_no=2) 클론 프로젝트입니다. 
 프론트단의 퍼블리싱과 디자인은 엘롯데를 참고하여 구현했습니다. 
 
+<br />
 
-# 프로젝트 명령어
+## 프로젝트 명령어
 
 ### Project setup
 ```
