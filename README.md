@@ -3,8 +3,9 @@
 프론트단의 퍼블리싱과 디자인은 엘롯데를 참고하여 구현했습니다. 
 
 
+# 프로젝트 명령어
 
-## Project setup
+### Project setup
 ```
 npm install
 ```
