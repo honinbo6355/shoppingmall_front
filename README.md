@@ -4,6 +4,12 @@
 
 <br />
 
+## 백엔드 API Repository
+- 상품평 API : https://github.com/honinbo6355/plateermall_comment
+- 상품 API : https://github.com/honinbo6355/plateermall_goods
+
+<br />
+
 ## 프로젝트 관련 명령어
 
 ### Project setup
