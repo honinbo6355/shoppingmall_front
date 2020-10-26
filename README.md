@@ -14,6 +14,15 @@
 
 <br />
 
+## 사용 기술
+- vue.js
+- axios
+- SpringBoot
+- heroku
+- amplify
+
+<br />
+
 ## 프로젝트 관련 명령어
 
 ### Project setup
