@@ -7,6 +7,10 @@
 ## 백엔드 API Repository
 - 상품평 API : https://github.com/honinbo6355/plateermall_comment
 - 상품 API : https://github.com/honinbo6355/plateermall_goods
+- 주문 API : https://github.com/honinbo6355/plateermall_order
+- Q&A API : https://github.com/honinbo6355/plateermall_board
+- 장바구니, 위시리스트 API : https://github.com/honinbo6355/plateermall_cart_wishlist
+- 인증 API : https://github.com/honinbo6355/plateermall_auth
 
 <br />
 
