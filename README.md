@@ -14,6 +14,11 @@
 
 <br />
 
+## 사이트 url
+https://master.d3lqifwt6mhss6.amplifyapp.com/
+
+<br />
+
 ## 사용 기술
 - vue.js
 - axios
